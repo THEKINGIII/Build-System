@@ -1,0 +1,10 @@
+{
+  "name": "intermediate-build-system",
+  "version": "1.0.0",
+  "description": "Heavy duty build system to do a lot of tasks ",
+  "repository": {
+    "type": "git",
+    "url": "?.git"
+  },
+  "author": "Majd Fouqhaa"
+}
