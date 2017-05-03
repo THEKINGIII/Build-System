@@ -4,7 +4,8 @@
 var gulp = require('gulp'),
     g_util = require('gulp-util'),
     coffee = require('gulp-coffee'),
-    concat = require('gulp-concat')
+    concat = require('gulp-concat'),
+    browserify = require('gulp-browserify')
     ;
 
 // Lets define sources to watch 
@@ -31,6 +32,8 @@ gulp.task('jsConcat',function(){
 
 	gulp.src(jsSource)
 		.pipe(concat('script.js'))
+		// Adding browserify to fetch packages automatically
+		.pipe(browserify())
 		.pipe(gulp.dest('builds/development/js'))
 
 });
