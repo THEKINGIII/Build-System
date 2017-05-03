@@ -26,7 +26,7 @@ gulp.task('coffee',function(){
 	.pipe(gulp.dest('components/scripts'))
 });
 
-// Concatinating javaScript files using gulp-concat
+// Concatenating javaScript files using gulp-concat
 gulp.task('jsConcat',function(){
 
 	gulp.src(jsSource)
