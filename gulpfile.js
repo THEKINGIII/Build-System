@@ -5,12 +5,14 @@ var gulp = require('gulp'),
     g_util = require('gulp-util'),
     coffee = require('gulp-coffee'),
     concat = require('gulp-concat'),
-    browserify = require('gulp-browserify')
+    browserify = require('gulp-browserify'),
+    compass = require('gulp-compass')
     ;
 
 // Lets define sources to watch 
 var coffeeSource = ['components/coffie/*.coffee'],
-	jsSource = ['components/scripts/*.js']
+	jsSource = ['components/scripts/*.js'],
+	sassSource = ['components/sass/style.scss']
 	;
 // Now we can initialize a gulp task -> lets do that
 gulp.task('coffee',function(){
@@ -27,6 +29,7 @@ gulp.task('coffee',function(){
 	.pipe(gulp.dest('components/scripts'))
 });
 
+
 // Concatenating javaScript files using gulp-concat
 gulp.task('jsConcat',function(){
 
@@ -35,5 +38,27 @@ gulp.task('jsConcat',function(){
 		// Adding browserify to fetch packages automatically
 		.pipe(browserify())
 		.pipe(gulp.dest('builds/development/js'))
+
+});
+
+/*
+
+	Note: because we are using compass in this project we need to use gulp-comapss. But, if we want to use sass only we can use gulp-sass that will hold all that stuff.
+
+	Don't forget -> use return sass(sourceFile) instead of gulp.src(soruceFile). 
+
+*/
+
+//Compiling Sass files to style.css
+gulp.task('sass',function(){
+
+	gulp.src(sassSource)
+		.pipe(compass({
+			sass 		 :'components/sass',
+			image    :'builds/development/images',
+			style    :'expanded'
+		}))
+		.on('error', g_util.log)
+		.pipe(gulp.dest('builds/development/css'))
 
 });
