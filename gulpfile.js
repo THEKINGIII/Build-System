@@ -3,11 +3,14 @@
  */
 var gulp = require('gulp'),
     g_util = require('gulp-util'),
-    coffee = require('gulp-coffee');
+    coffee = require('gulp-coffee'),
+    concat = require('gulp-concat')
+    ;
 
 // Lets define sources to watch 
-var coffeeSource = ['components/coffie/*.coffee'];
-
+var coffeeSource = ['components/coffie/*.coffee'],
+	jsSource = ['components/scripts/*.js']
+	;
 // Now we can initialize a gulp task -> lets do that
 gulp.task('coffee',function(){
 	// Choose the source to watch
@@ -21,4 +24,13 @@ gulp.task('coffee',function(){
 	.on('error',g_util.log)
 	// Finally, choose the destination for output
 	.pipe(gulp.dest('components/scripts'))
+});
+
+// Concatinating javaScript files using gulp-concat
+gulp.task('jsConcat',function(){
+
+	gulp.src(jsSource)
+		.pipe(concat('script.js'))
+		.pipe(gulp.dest('builds/development/js'))
+
 });
