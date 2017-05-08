@@ -4,7 +4,7 @@
   "description": "Heavy duty build system to do a lot of tasks ",
   "repository": {
     "type": "git",
-    "url": "?.git"
+    "url": "https://github.com/THEKINGIII/Build-System.git"
   },
   "author": "Majd Fouqhaa",
   "devDependencies": {

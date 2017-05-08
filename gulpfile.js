@@ -10,7 +10,7 @@ var gulp = require('gulp'),
     ;
 
 // Lets define sources to watch 
-var coffeeSource = ['components/coffie/*.coffee'],
+var coffeeSource = ['components/coffee/*.coffee'],
 	jsSource = ['components/scripts/*.js'],
 	sassSource = ['components/sass/style.scss']
 	;
@@ -20,10 +20,10 @@ gulp.task('coffee',function(){
 	gulp.src(coffeeSource)
 	// Pipe the process/ task to be done there
 	.pipe(coffee({
-		// Options related to gulp-coffee -> check gulp-coffee repo on github
+		// Options related to gulp-coffee -> check gulp-coffee repo on git-hub
 		bare	:true
 	}))
-	// To prevent gulp process blocking, means when error happens continuo the work
+	// To prevent gulp process blocking, means when error happens continue the work
 	.on('error',g_util.log)
 	// Finally, choose the destination for output
 	.pipe(gulp.dest('components/scripts'))
@@ -43,7 +43,7 @@ gulp.task('jsConcat',function(){
 
 /*
 
-	Note: because we are using compass in this project we need to use gulp-comapss. But, if we want to use sass only we can use gulp-sass that will hold all that stuff.
+	Note: because we are using compass in this project we need to use gulp-compass. But, if we want to use sass only we can use gulp-sass that will hold all that stuff.
 
 	Don't forget -> use return sass(sourceFile) instead of gulp.src(soruceFile). 
 
