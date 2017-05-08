@@ -6,7 +6,8 @@ var gulp = require('gulp'),
     coffee = require('gulp-coffee'),
     concat = require('gulp-concat'),
     browserify = require('gulp-browserify'),
-    compass = require('gulp-compass')
+    compass = require('gulp-compass'),
+    connect = require('gulp-connect')
     ;
 
 // Lets define sources to watch 
@@ -38,6 +39,7 @@ gulp.task('jsConcat',function(){
 		// Adding browserify to fetch packages automatically
 		.pipe(browserify())
 		.pipe(gulp.dest('builds/development/js'))
+		.pipe(connect.reload())
 
 });
 
@@ -60,6 +62,7 @@ gulp.task('sass',function(){
 		}))
 		.on('error', g_util.log)
 		.pipe(gulp.dest('builds/development/css'))
+		.pipe(connect.reload())
 
 });
 // After creating all required tasks, we need to watch them auto -> so to do that
@@ -76,4 +79,17 @@ gulp.task('watch', function() {
 // WE can fire a gulp command alone. As a result, it will look for default task
 // Which is created down below
 
-gulp.task('default', ['coffee', 'jsConcat', 'sass', 'watch']);
+// TO the interesting part -> Livereload, so to do that we need a gulp-connect 
+gulp.task('connect', function(){
+	connect.server({
+
+		// Modify our server 
+		// 1- determine the root of your app 
+		root: 'builds/development/',
+		port: 10000,
+		livereload: true 
+	})
+});
+
+// Default task 
+gulp.task('default', ['coffee', 'jsConcat', 'sass', 'connect','watch']);
