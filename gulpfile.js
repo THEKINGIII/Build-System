@@ -13,7 +13,9 @@ var gulp = require('gulp'),
 // Lets define sources to watch 
 var coffeeSource = ['components/coffee/*.coffee'],
 	jsSource = ['components/scripts/*.js'],
-	sassSource = ['components/sass/style.scss']
+	sassSource = ['components/sass/style.scss'],
+	htmlSource = ['builds/development/*.html'],
+	jsonSource = ['builds/development/js/*.json']
 	;
 // Now we can initialize a gulp task -> lets do that
 gulp.task('coffee',function(){
@@ -65,6 +67,19 @@ gulp.task('sass',function(){
 		.pipe(connect.reload())
 
 });
+// Watching static files like html, json 
+// HTML
+gulp.task('html', function(){
+	gulp.src(htmlSource)
+	.pipe(connect.reload())
+
+});
+// JSON
+gulp.task('json', function(){
+	gulp.src(jsonSource)
+	.pipe(connect.reload())
+
+});
 // After creating all required tasks, we need to watch them auto -> so to do that
 // WE have to create a watch task. Let's do that 
 gulp.task('watch', function() {
@@ -73,11 +88,10 @@ gulp.task('watch', function() {
 	gulp.watch(coffeeSource, ['coffee']);
 	gulp.watch(jsSource, ['jsConcat']);
 	gulp.watch('components/sass/*.scss', ['sass']);
+	gulp.watch(htmlSource, ['html']);
+	gulp.watch(jsonSource, ['json']);
 
 });
-
-// WE can fire a gulp command alone. As a result, it will look for default task
-// Which is created down below
 
 // TO the interesting part -> Livereload, so to do that we need a gulp-connect 
 gulp.task('connect', function(){
@@ -91,5 +105,8 @@ gulp.task('connect', function(){
 	})
 });
 
+// WE can fire a gulp command alone. As a result, it will look for default task
+// Which is created down below
+
 // Default task 
-gulp.task('default', ['coffee', 'jsConcat', 'sass', 'connect','watch']);
+gulp.task('default', ['html', 'json', 'coffee', 'jsConcat', 'sass', 'connect','watch']);
