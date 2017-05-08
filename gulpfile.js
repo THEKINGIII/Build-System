@@ -1,27 +1,29 @@
 /**
  * Created by majdfouqhaa on 5/3/17.
  */
-var gulp = require('gulp'),
-    g_util = require('gulp-util'),
-    coffee = require('gulp-coffee'),
-    concat = require('gulp-concat'),
-    browserify = require('gulp-browserify'),
-    compass = require('gulp-compass'),
-    connect = require('gulp-connect'),
-    gulpif = require('gulp-if'),
-    minify_html = require('gulp-minify-html'),
-    uglify = require('gulp-uglify')
-    ;
+var gulp          = require('gulp'),
+    g_util 				= require('gulp-util'),
+    coffee 				= require('gulp-coffee'),
+    concat 				= require('gulp-concat'),
+    browserify 		= require('gulp-browserify'),
+    compass 			= require('gulp-compass'),
+    connect 			= require('gulp-connect'),
+    gulpif 				= require('gulp-if'),
+    minify_html 	= require('gulp-minify-html'),
+    uglify 				= require('gulp-uglify'),
+    imagemin 			= require('gulp-imagemin'),
+    pngcrush      = require('imagemin-pngcrush')
+;
 
 // Lets define sources to watch 
-var coffeeSource,
-	jsSource,
-	sassSource,
-	jsonSource,
-	env,
-	outputDir,
-	sassStyle
-	;
+var  coffeeSource,
+	   jsSource,
+	   sassSource,
+	   jsonSource,
+	   env,
+	   outputDir,
+	   sassStyle
+;
 
 // Check env var. Either development or production. 
 env = process.env.NODE_ENV || 'development';
@@ -108,6 +110,23 @@ gulp.task('json', function(){
 	.pipe(connect.reload())
 
 });
+
+// Last portion in this build-system -> Images Compression
+gulp.task('images', function(){
+
+	gulp.src('builds/development/images/**/*.*')
+	imagemin(['builds/development/images/**/*.*'], 'builds/production/images/', {
+		progressive: true,
+		svgoPlugins:[{removeViewBox: false}],
+    plugins: [
+        pngcrush()
+    ]
+	})
+	.pipe(gulpif(env === "production", gulp.dest(outputDir +'images')))
+	.pipe(connect.reload())
+
+});
+
 // After creating all required tasks, we need to watch them auto -> so to do that
 // WE have to create a watch task. Let's do that 
 gulp.task('watch', function() {
@@ -118,6 +137,7 @@ gulp.task('watch', function() {
 	gulp.watch('components/sass/*.scss', ['sass']);
 	gulp.watch('builds/development/*.html', ['html']);
 	gulp.watch(jsonSource, ['json']);
+	gulp.watch('builds/development/images/**/*.*', ['images']);
 
 });
 
@@ -146,4 +166,4 @@ gulp.task('connectPRO', function(){
 // Which is created down below
 
 // Default task 
-gulp.task('default', ['html', 'json', 'coffee', 'jsConcat', 'sass', 'connectDEV','connectPRO','watch']);
+gulp.task('default', ['html', 'json', 'coffee', 'jsConcat', 'sass','images', 'connectDEV','connectPRO','watch']);
