@@ -62,8 +62,18 @@ gulp.task('sass',function(){
 		.pipe(gulp.dest('builds/development/css'))
 
 });
+// After creating all required tasks, we need to watch them auto -> so to do that
+// WE have to create a watch task. Let's do that 
+gulp.task('watch', function() {
+		
+	// Here we have to specify what to watch and tasks related to it 
+	gulp.watch(coffeeSource, ['coffee']);
+	gulp.watch(jsSource, ['jsConcat']);
+	gulp.watch('components/sass/*.scss', ['sass']);
+
+});
 
 // WE can fire a gulp command alone. As a result, it will look for default task
 // Which is created down below
 
-gulp.task('default', ['coffee', 'jsConcat', 'sass']);
+gulp.task('default', ['coffee', 'jsConcat', 'sass', 'watch']);
