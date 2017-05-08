@@ -62,3 +62,8 @@ gulp.task('sass',function(){
 		.pipe(gulp.dest('builds/development/css'))
 
 });
+
+// WE can fire a gulp command alone. As a result, it will look for default task
+// Which is created down below
+
+gulp.task('default', ['coffee', 'jsConcat', 'sass']);
