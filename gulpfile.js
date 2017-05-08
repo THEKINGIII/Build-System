@@ -7,14 +7,16 @@ var gulp = require('gulp'),
     concat = require('gulp-concat'),
     browserify = require('gulp-browserify'),
     compass = require('gulp-compass'),
-    connect = require('gulp-connect')
+    connect = require('gulp-connect'),
+    gulpif = require('gulp-if'),
+    minify_html = require('gulp-minify-html'),
+    uglify = require('gulp-uglify')
     ;
 
 // Lets define sources to watch 
 var coffeeSource,
 	jsSource,
 	sassSource,
-	htmlSource,
 	jsonSource,
 	env,
 	outputDir,
@@ -38,7 +40,6 @@ if(env === " development "){
 coffeeSource = ['components/coffee/*.coffee'];
 jsSource = ['components/scripts/*.js'];
 sassSource = ['components/sass/style.scss'];
-htmlSource = [outputDir +'*.html'];
 jsonSource = [outputDir +'js/*.json'];
 
 // Now we can initialize a gulp task -> lets do that
@@ -64,6 +65,7 @@ gulp.task('jsConcat',function(){
 		.pipe(concat('script.js'))
 		// Adding browserify to fetch packages automatically
 		.pipe(browserify())
+		.pipe(gulpif(env ==="production", uglify()))
 		.pipe(gulp.dest(outputDir +'js'))
 		.pipe(connect.reload())
 
@@ -94,7 +96,9 @@ gulp.task('sass',function(){
 // Watching static files like html, json 
 // HTML
 gulp.task('html', function(){
-	gulp.src(htmlSource)
+	gulp.src('builds/development/*.html')
+	.pipe(gulpif(env === "production", minify_html()))
+	.pipe(gulpif(env === "production", gulp.dest(outputDir)))
 	.pipe(connect.reload())
 
 });
@@ -112,25 +116,34 @@ gulp.task('watch', function() {
 	gulp.watch(coffeeSource, ['coffee']);
 	gulp.watch(jsSource, ['jsConcat']);
 	gulp.watch('components/sass/*.scss', ['sass']);
-	gulp.watch(htmlSource, ['html']);
+	gulp.watch('builds/development/*.html', ['html']);
 	gulp.watch(jsonSource, ['json']);
 
 });
 
 // TO the interesting part -> Livereload, so to do that we need a gulp-connect 
-gulp.task('connect', function(){
+gulp.task('connectDEV', function(){
 	connect.server({
 
 		// Modify our server 
 		// 1- determine the root of your app 
-		root: outputDir,
+		root: "builds/development/",
 		port: 10000,
 		livereload: true 
 	})
 });
 
+gulp.task('connectPRO', function(){
+	connect.server({
+		root: "builds/production/",
+		port: 9900,
+		livereload: true 
+	})
+});
+
+
 // WE can fire a gulp command alone. As a result, it will look for default task
 // Which is created down below
 
 // Default task 
-gulp.task('default', ['html', 'json', 'coffee', 'jsConcat', 'sass', 'connect','watch']);
+gulp.task('default', ['html', 'json', 'coffee', 'jsConcat', 'sass', 'connectDEV','connectPRO','watch']);
