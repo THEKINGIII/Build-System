@@ -11,12 +11,36 @@ var gulp = require('gulp'),
     ;
 
 // Lets define sources to watch 
-var coffeeSource = ['components/coffee/*.coffee'],
-	jsSource = ['components/scripts/*.js'],
-	sassSource = ['components/sass/style.scss'],
-	htmlSource = ['builds/development/*.html'],
-	jsonSource = ['builds/development/js/*.json']
+var coffeeSource,
+	jsSource,
+	sassSource,
+	htmlSource,
+	jsonSource,
+	env,
+	outputDir,
+	sassStyle
 	;
+
+// Check env var. Either development or production. 
+env = process.env.NODE_ENV || 'development';
+
+if(env === " development "){
+	outputDir = "builds/development/";
+	sassStyle = "expanded";
+
+} else {
+	outputDir = "builds/production/";
+	sassStyle = "compressed";
+
+}
+
+// Assigning vars 
+coffeeSource = ['components/coffee/*.coffee'];
+jsSource = ['components/scripts/*.js'];
+sassSource = ['components/sass/style.scss'];
+htmlSource = [outputDir +'*.html'];
+jsonSource = [outputDir +'js/*.json'];
+
 // Now we can initialize a gulp task -> lets do that
 gulp.task('coffee',function(){
 	// Choose the source to watch
@@ -40,7 +64,7 @@ gulp.task('jsConcat',function(){
 		.pipe(concat('script.js'))
 		// Adding browserify to fetch packages automatically
 		.pipe(browserify())
-		.pipe(gulp.dest('builds/development/js'))
+		.pipe(gulp.dest(outputDir +'js'))
 		.pipe(connect.reload())
 
 });
@@ -59,11 +83,11 @@ gulp.task('sass',function(){
 	gulp.src(sassSource)
 		.pipe(compass({
 			sass 		 :'components/sass',
-			image    :'builds/development/images',
-			style    :'expanded'
+			image    :outputDir +'images',
+			style    :sassStyle
 		}))
 		.on('error', g_util.log)
-		.pipe(gulp.dest('builds/development/css'))
+		.pipe(gulp.dest(outputDir +'css'))
 		.pipe(connect.reload())
 
 });
@@ -99,7 +123,7 @@ gulp.task('connect', function(){
 
 		// Modify our server 
 		// 1- determine the root of your app 
-		root: 'builds/development/',
+		root: outputDir,
 		port: 10000,
 		livereload: true 
 	})
